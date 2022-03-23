@@ -1,10 +1,13 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 
 import '../models/tareas/task_modelGet.dart';
 import '../models/tareas/task_modelPost.dart';
 
 class TasksProvider {
-  final String _url = 'http://192.168.1.97:3500';
+  final String _url = 'http://192.168.1.98:3500';
   Dio dio = Dio();
 
   TaskModelPost task = new TaskModelPost();
@@ -22,17 +25,18 @@ class TasksProvider {
     final url = '$_url/tasks';
 
     final resp = await dio.get(url);
+    // log(resp.data.toString());
 
     final List<TaskModelGet> tasks = [];
 
-    var result = resp.data.map((item) {
+    //Imprimir array que llega
+    // print(resp.data['data'][0]['id']);
+    resp.data['data'].forEach((item) {
+      // print(item);
       final prodTemp = TaskModelGet.fromJson(item);
-
       tasks.add(prodTemp);
-    });
-
-    print(result);
-
+    }
+    );
     return tasks;
   }
 
@@ -45,11 +49,9 @@ class TasksProvider {
   }
 
   Future<int> borrarProducto(String id) async {
-    
     final url = '$_url/tasks/$id';
 
     final resp = await dio.delete(url);
-
 
     return 1;
   }

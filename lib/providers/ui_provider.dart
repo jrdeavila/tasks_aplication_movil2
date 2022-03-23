@@ -2,7 +2,7 @@
 import 'package:flutter/foundation.dart';
 
 class UiProvider extends ChangeNotifier {
-  int _selectedMenuOpt = 0;  
+  int _selectedMenuOpt = 1;
 
   int get selectedMenuOpt {
     return this._selectedMenuOpt;
@@ -12,5 +12,4 @@ class UiProvider extends ChangeNotifier {
     this._selectedMenuOpt = i;
     notifyListeners();
   }
-
 }

@@ -1,32 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:task_aplicattion2/pages/task_page.dart';
+import 'package:task_aplicattion2/pages/tasks/task_page.dart';
+import 'package:task_aplicattion2/widgets/buttom_bar.dart';
 
 import '../providers/ui_provider.dart';
-import '../widgets/custom_navigator.dart';
-import '../widgets/scan_button.dart';
-import 'activity_page.dart';
-import 'home_page.dart';
+import 'activities/list_Activity_page.dart';
+import 'tasks/list_tasks_page.dart';
 
 class HomePages extends StatelessWidget {
+
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    appBar: AppBar(
-      backgroundColor: Color.fromRGBO(57, 62, 70, 1),
-      elevation: 0,
-      title: Text('Apps Task'),
-      actions: [
-        IconButton(
-          onPressed: (){},
-          icon: Icon(Icons.search)
-        )
-      ],
-    ),
     body: _HomePageBody(),
-    bottomNavigationBar: CustomNavigationBar(),
-      floatingActionButton: ScanButton(),
+    bottomNavigationBar: ButtomNavigationBar(),
+      // floatingActionButton: ScanButton(),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
   );
@@ -47,36 +37,18 @@ class _HomePageBody extends StatelessWidget {
     switch(currentIndex){
 
       case 0:
-        return ActivityPage();
+        return ListACtivityPage();
 
       case 1:
-        return HomePage();
+        return ListTaskPage();
 
       case 2:
         return TaskPage();
 
 
       default: 
-        return HomePage();
+        return ListTaskPage();
 
     }
-
-    //Obtener el select menu opt
-    // final uiProvider = Provider.of<UiProvider>(context);
-
-    
-    // switch(currentIndex) {
-
-    //   case 0:
-    //   return TaskPage();
-
-    //   case 1: 
-    //     return ActivityPage();
-      
-
-    //   default:
-    //     return HomePages();
-    // }
-
   }
 }

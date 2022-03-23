@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:task_aplicattion2/pages/activity_page.dart';
-import 'package:task_aplicattion2/pages/home_page.dart';
+import 'package:task_aplicattion2/pages/activities/activities_page.dart';
+import 'package:task_aplicattion2/pages/activities/list_Activity_page.dart';
+import 'package:task_aplicattion2/pages/tasks/list_tasks_page.dart';
 import 'package:task_aplicattion2/pages/home_pages.dart';
-import 'package:task_aplicattion2/pages/task_page.dart';
+import 'package:task_aplicattion2/pages/tasks/task_page.dart';
 import 'package:task_aplicattion2/providers/ui_provider.dart';
 
 void main() => runApp(MyApp());
  
 class MyApp extends StatelessWidget {
-   
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -21,12 +21,15 @@ class MyApp extends StatelessWidget {
         title: 'Books',
         initialRoute: 'homes',
         routes: {
-          'home'  : (BuildContext context) => HomePage(),
+          'listTaskPage'  : (BuildContext context) => ListTaskPage(),
           'homes'  : (BuildContext context) => HomePages(),
           'task'  : (BuildContext context) => TaskPage(),
-          'activity'  : (BuildContext context) => ActivityPage(),
+          'listActivityPage'  : (BuildContext context) => ListACtivityPage(),
+          'activity'  : (BuildContext context) => ActivitiesPage(),
+          // 'login'  : (BuildContext context) => LoginPage(),
+
         },
       ),
     );
-  } 
+  }
 }

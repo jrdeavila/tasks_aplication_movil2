@@ -2,29 +2,31 @@
 import 'package:flutter/material.dart';
 import 'package:pandabar/main.view.dart';
 import 'package:pandabar/model.dart';
+import 'package:provider/provider.dart';
+
+import '../estilos/Colores_estilos.dart';
+import '../providers/ui_provider.dart';
 
 
 
 class ButtomNavigationBar extends StatelessWidget {
 
-   String page = 'task';
+  String page = 'task';
+  Colores _colores = Colores();
 
   @override
   Widget build(BuildContext context) {
 
-  //  final uiProvider = Provider.of<UiProvider>(context);
-  //  final currenIndex = uiProvider.selectedMenuOpt;
+    final uiProvider = Provider.of<UiProvider>(context);
+    final currentIndex = uiProvider.selectedMenuOpt;
 
-    
     return PandaBar(
-
         buttonData: [
           PandaBarButtonData(
             id: 'task',
             icon: Icons.task_outlined,
             title: 'Tareas'
           ),
-          
           PandaBarButtonData(
             id: 'activity',
             icon: Icons.local_activity_outlined,
@@ -35,29 +37,34 @@ class ButtomNavigationBar extends StatelessWidget {
             icon: Icons.star,
             title: 'Favoritas',
           ),
-          
         ],
         onChange: (id) {
 
             page = id;
             if (page=='activity') {
-              
-                Navigator.pushNamed(context, 'activity');
+              uiProvider.selectedMenuOpt = 0;
+                // Navigator.pushNamed(context, 'task');
             }
             if (page == 'task') {
-                Navigator.pushNamed(context, 'home');
+              uiProvider.selectedMenuOpt = 1;
+                // Navigator.pushNamed(context, 'activity');
             }
             // Navigator.pushNamed(context, routeName);
         },
         fabIcon: Icon(Icons.add),
         fabColors: [
-          Color.fromRGBO(0, 173, 181, 1),
-          Color.fromRGBO(57, 62, 70, 1),
+          _colores.teal,
+          _colores.grey,
         ],
-        buttonSelectedColor: Color.fromRGBO(0, 173, 181, 1),
-        backgroundColor: Color.fromRGBO(34, 40, 49, 1),
+        buttonSelectedColor: _colores.teal,
+        backgroundColor: _colores.black,
         onFabButtonPressed: () {
-          Navigator.pushNamed(context, 'task');
+          if (uiProvider.selectedMenuOpt ==1) {
+            Navigator.pushNamed(context, 'task');
+          }
+          if(uiProvider.selectedMenuOpt ==0){
+            Navigator.pushNamed(context, 'activity');
+          }
         },
       );
   }
