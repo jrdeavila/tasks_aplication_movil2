@@ -3,22 +3,33 @@ import 'package:flutter/material.dart';
 import 'package:pandabar/main.view.dart';
 import 'package:pandabar/model.dart';
 import 'package:provider/provider.dart';
+import 'package:task_aplicattion2/pages/tasks/list_tasks_page.dart';
+import 'package:task_aplicattion2/widgets/snacbar_widget.dart';
 
 import '../estilos/Colores_estilos.dart';
+import '../providers/snacbar_provider.dart';
 import '../providers/ui_provider.dart';
 
 
 
-class ButtomNavigationBar extends StatelessWidget {
+class ButtomNavigationBar extends StatefulWidget {
 
+  @override
+  State<ButtomNavigationBar> createState() => _ButtomNavigationBarState();
+}
+
+class _ButtomNavigationBarState extends State<ButtomNavigationBar> {
   String page = 'task';
+
   Colores _colores = Colores();
 
   @override
   Widget build(BuildContext context) {
 
     final uiProvider = Provider.of<UiProvider>(context);
-    final currentIndex = uiProvider.selectedMenuOpt;
+    // final currentIndex = uiProvider.selectedMenuOpt;
+    final snacbarProvider = Provider.of<SnacBarProvider>(context,listen: false);
+
 
     return PandaBar(
         buttonData: [
@@ -34,12 +45,11 @@ class ButtomNavigationBar extends StatelessWidget {
           ),
           PandaBarButtonData(
             id: 'favoritas',
-            icon: Icons.star,
-            title: 'Favoritas',
+            icon: Icons.person,
+            title: 'Usuario',
           ),
         ],
         onChange: (id) {
-
             page = id;
             if (page=='activity') {
               uiProvider.selectedMenuOpt = 0;
@@ -60,7 +70,17 @@ class ButtomNavigationBar extends StatelessWidget {
         backgroundColor: _colores.black,
         onFabButtonPressed: () {
           if (uiProvider.selectedMenuOpt ==1) {
-            Navigator.pushNamed(context, 'task');
+            Navigator.pushNamed(context, 'task').then((value) {
+              value.hashCode;
+              setState(() {
+                mostrarSnacbar(
+                  status:  snacbarProvider.selectedStatusCode,
+                  context: context,
+                  typeModel: 'task',
+                  typeConsult: 'post'
+                );
+              });
+            });
           }
           if(uiProvider.selectedMenuOpt ==0){
             Navigator.pushNamed(context, 'activity');

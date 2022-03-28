@@ -1,11 +1,14 @@
 // ignore_for_file: unused_field
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:task_aplicattion2/providers/snacbar_provider.dart';
 
 import '../../estilos/Colores_estilos.dart';
 import '../../models/tareas/task_modelGet.dart';
 import '../../models/tareas/task_modelPost.dart';
-import '../../providers/tasks_providers.dart';
+import '../../services/tasks_service.dart';
+import '../../widgets/snacbar_widget.dart';
 import '../../widgets/textFormField_task_widget.dart';
 
 class TaskPage extends StatefulWidget {
@@ -23,7 +26,10 @@ class TaskPage extends StatefulWidget {
 class _TaskPageState extends State<TaskPage> {
   final formKey = GlobalKey<FormState>();
   final scaffoldkey = GlobalKey<ScaffoldState>();
-  final tasksProvider = TasksProvider();
+  final tasksService = TasksService();
+
+
+  
 
   TaskModelPost taskModelPost = TaskModelPost();
   TaskModelGet taskModelGet = TaskModelGet();
@@ -33,11 +39,13 @@ class _TaskPageState extends State<TaskPage> {
   @override
   Widget build(BuildContext context) {
     final TaskModelGet taskDataGet = ModalRoute.of(context).settings.arguments;
+
     Colores _colores = Colores();
 
-
+    
     // bool tipo = ModalRoute.of(context).settings.arguments;
     taskModelGet = taskDataGet;
+
 
     return Scaffold(
       key: scaffoldkey,
@@ -66,9 +74,9 @@ class _TaskPageState extends State<TaskPage> {
                   taskModelGet: taskModelGet,
                   taskModelPost: taskModelPost,
                   validatorFalse:  'Ingrese el nombre de la tarea',
-                  validatorTrue: 'La tarea no puede contener mas de 45 caracteres'
+                  validatorTrue: 'La tarea no puede contener mas de 45 caracteres',
                 ),
-                Divider(),
+                SizedBox(height: 20,),
                 formField(
                   type: 'descripcion',
                   icon: Icon(Icons.description_outlined),
@@ -77,12 +85,10 @@ class _TaskPageState extends State<TaskPage> {
                   taskModelGet: taskModelGet,
                   taskModelPost: taskModelPost,
                   validatorFalse:  '',
-                  validatorTrue: 'La descripcion no puede contener mas de 255 caracteres'
+                  validatorTrue: 'La descripcion no puede contener mas \nde 255 caracteres',
                 ),
                 // _crearDescripcion(_colores),
-                SizedBox(
-                  height: 20,
-                ),
+                SizedBox(height: 20,),
                 _crearDisponible(context),
                 SizedBox(
                   height: 20,
@@ -179,7 +185,7 @@ class _TaskPageState extends State<TaskPage> {
           ],
         ),
         // onPressed: (_guardando) ? null : _submit,
-        onPressed: _submit,
+        onPressed: (){_submit(context);},
       ),
     ));
   }
@@ -199,7 +205,10 @@ class _TaskPageState extends State<TaskPage> {
     }
   }
 
-  void _submit() {
+  Future<void> _submit(BuildContext context) async {
+    final snacbarProvider = Provider.of<SnacBarProvider>(context,listen: false);
+
+
     if (!formKey.currentState.validate()) return;
     formKey.currentState.save();
 
@@ -209,26 +218,25 @@ class _TaskPageState extends State<TaskPage> {
 
     if (taskModelGet != null) {
       // print(taskModelGetToJson(taskModelGet));
-      tasksProvider.editartask(taskModelGet);
+      tasksService.editartask(taskModelGet);
 
     } else {
       //Registrar
-      tasksProvider.crearTask(taskModelPost);
+      snacbarProvider.selectedStatusCode = await tasksService.crearTask(taskModelPost);
     }
-
     Navigator.pop(context);
   }
 
-  void mostrarSnacbar(String mensaje) {
-    final snackbar = SnackBar(
-      backgroundColor: Colors.green,
-      content: Text(
-        mensaje,
-        style: TextStyle(fontWeight: FontWeight.bold),
-      ),
-      duration: Duration(milliseconds: 3000),
-    );
-    // ignore: deprecated_member_use
-    scaffoldkey.currentState.showSnackBar(snackbar);
-  }
+  // void mostrarSnacbar(String mensaje) {
+  //   final snackbar = SnackBar(
+  //     backgroundColor: Colors.green,
+  //     content: Text(
+  //       mensaje,
+  //       style: TextStyle(fontWeight: FontWeight.bold),
+  //     ),
+  //     duration: Duration(milliseconds: 3000),
+  //   );
+  //   // ignore: deprecated_member_use
+  //   scaffoldkey.currentState.showSnackBar(snackbar);
+  // }
 }

@@ -2,10 +2,10 @@
 import 'dart:async';
 
 import 'package:rxdart/rxdart.dart';
-import 'package:task_aplicattion2/bloc/validators.dart';
+import 'package:task_aplicattion2/blocs/login/validators_login.dart';
 
 
-class LoginBLoc with Validators{
+class LoginBLoc with ValidatorsLogin{
 
   final _emailController = BehaviorSubject<String>();
   final _passwordController = BehaviorSubject<String>();
@@ -16,7 +16,7 @@ class LoginBLoc with Validators{
   Stream<String> get  passwordStream => _passwordController.stream.transform(validarPassword);
 
   Stream<bool> get formValidStream =>
-       Rx.combineLatest2(emailStream, passwordStream, (e, p) => true);
+      Rx.combineLatest2(emailStream, passwordStream, (e, p) => true);
 
   //Insertar valores al Stream
   Function(String) get changeEmail => _emailController.sink.add;
@@ -25,9 +25,9 @@ class LoginBLoc with Validators{
   //obtener el ultimo valor ingresar a los streams
 
   String get email => _emailController.value;
-  
+
   String get password => _passwordController.value;
-  
+
 
   dispose() {
     _emailController.close();

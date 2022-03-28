@@ -1,7 +1,7 @@
 
 import 'dart:async';
 
-class Validators {
+class ValidatorsLogin {
 
     final validarEmail = StreamTransformer<String, String>.fromHandlers(
     handleData: (email,sink){
@@ -24,10 +24,30 @@ class Validators {
       if (password.length >=6) {
         sink.add(password);
       }else{
-        sink.addError('MAs de 6 caracteres por favor');
+        sink.addError('Mas de 6 caracteres por favor');
       }
     }
   );
+
+  //   final validarname = StreamTransformer<String, String>.fromHandlers(
+  //   handleData: (name,sink){
+
+  //     if (name.length > 1) {
+  //       if (name.length<45) {
+
+  //         sink.add(name);
+
+  //       }else{
+  //         sink.addError('El nombre no debe contener mas de 45 caracteres');
+
+  //       }
+
+  //     }else{
+  //       sink.addError('El nombre es requerido');
+  //     }
+  //   }
+  // );
+
 
 
 }

@@ -18,6 +18,7 @@ Widget formField(
   ) {
     Colores colores = Colores();
     return TextFormField(
+      maxLines: type == 'name' ? 1 : 4 ,
       textCapitalization: TextCapitalization.sentences,
       initialValue:
         taskModelGet == null ? type=='name' ? taskModelPost.name:taskModelPost.description: type=='descripcion' ? taskModelGet.description : taskModelGet.name,
@@ -33,16 +34,26 @@ Widget formField(
       onSaved: (value) =>
            taskModelGet == null
           ? type=='name' ? taskModelPost.name = value  : taskModelPost.description = value
-          : type=='descripcion' ? taskModelGet.description = value :taskModelGet.description = value,
+          : type=='descripcion' ? taskModelGet.description = value : taskModelGet.name = value,
       validator: (value) {
-        if (value.length < 1) {
+        if (type=='name') {
+          if (value.length < 1) {
+            return validatorFalse;
+          } else {
           if (value.length > 45) {
+              return validatorTrue;
+            }
+            return null;
+          }
+        }
+
+        if (type=='descripcion') {
+          if (value.length > 255) {
             return validatorTrue;
           }
-          return validatorFalse;
-        } else {
           return null;
         }
+        return null;
       },
     );
   }

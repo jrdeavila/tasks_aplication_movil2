@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:task_aplicattion2/providers/snacbar_provider.dart';
+import 'package:task_aplicattion2/services/tasks_service.dart';
 import 'package:task_aplicattion2/widgets/AppBar_widget.dart';
+import 'package:task_aplicattion2/widgets/snacbar_widget.dart';
 
 import '../../estilos/Colores_estilos.dart';
 import '../../models/tareas/task_modelGet.dart';
-import '../../providers/tasks_providers.dart';
 
 class ListTaskPage extends StatefulWidget {
 
@@ -13,13 +16,26 @@ class ListTaskPage extends StatefulWidget {
 
 class ListTaskPageState extends State<ListTaskPage> {
 
-  final tasksProvider = new TasksProvider();
+  final tasksProvider = new TasksService();
   Colores _colores = Colores();
+  bool loading = false;
+  TasksService tasksService = TasksService();
 
+
+
+ @override
+ void initState() {
+   tasksService.cargarTasks;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+
+  // final heroesInfo = Provider.of<SnacBarProvider>(context);
+
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: appBar(title: 'Lista de tareas'),
       // body: Center(child: Text('Home Page'),),
       // floatingActionButton: _crearBoton(context),
@@ -46,38 +62,59 @@ class ListTaskPageState extends State<ListTaskPage> {
         }
       },
     );
-
   }
 
+
+
   Widget _crearItem( TaskModelGet task,BuildContext context){
+    final snacbarProvider = Provider.of<SnacBarProvider>(context,listen: false);
+
     return Container(
       child: Dismissible(
         key: UniqueKey(),
         background: Container(
-          color:  Color.fromRGBO(57, 62, 70, 1),
+          color:  Colors.white,
         ),
-        // onDismissed: (direccion){
-        //   tasksProvider.borrarProducto(producto.id);
-        // },
+        onDismissed: (direccion) async {
+         snacbarProvider.selectedStatusCode = await tasksProvider.deleteTask(task.id);
+
+        //  print(snacbarProvider.selectedStatusCode);
+         mostrarSnacbar(
+           status: snacbarProvider.selectedStatusCode,
+           context: context,
+            typeModel: 'task',
+            typeConsult: 'delete'
+         );
+
+        },
         child: Column(
           children: [
             GestureDetector(
               onTap: (){
-                 Navigator.pushNamed(context, 'task',arguments: task);
+                 Navigator.pushNamed(context, 'task',arguments: task).then((value) {setState(() {
+                   build(context);
+                 });});
               },
               child: Container(
                 margin: EdgeInsets.all(15),
                 width: double.infinity,
-                height: 70,
+                height: 80,
                 child: Card(
                   elevation: 10,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                    Text('${task.name}',style: TextStyle(color: _colores.grey,fontWeight: FontWeight.bold)),
-                    Text(task.description,style: TextStyle(color: _colores.teal),),
+                      // _crearDisponible(context,task),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container( padding: EdgeInsets.only(left: 10), child: Text('${task.name}',style: TextStyle(color: _colores.grey,fontWeight: FontWeight.bold))),
+                          Container(padding: EdgeInsets.only(left: 10), child: Text(task.description == null ? '' : task.description,style: TextStyle(color: _colores.grey,fontWeight: FontWeight.w300),)),
                         ],
+                      ),
+                     _statusTask(context,task),
+                    ],
                   ),
                 ),
               ),
@@ -88,8 +125,21 @@ class ListTaskPageState extends State<ListTaskPage> {
     );
   }
 
-  void initState() {
-    setState(() {
-    });
+
+  Widget _statusTask(BuildContext context,TaskModelGet taskModelGet) {
+    // print(tipo.toString());
+      return Container(
+        padding: EdgeInsets.only(right: 20),
+        child: Switch(
+          value: taskModelGet.status,
+          activeColor: _colores.teal,
+          onChanged:  (value)  async{
+            await tasksProvider.editarEstadoTask(taskModelGet.id);
+            setState(() {
+              taskModelGet.status = value;
+            });
+          },
+      ));
   }
+
 }
